@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>随机数生成器 · 默认设置</title>
+<link rel="stylesheet" href="options.css">
+</head>
+<body>
+<div class="wrap">
+
+  <h1>随机数生成器 · 默认设置</h1>
+  <p class="lead">这里的设置决定每次打开弹窗时的初始状态。弹窗里点「增加/减少数字」「切换骰子」只影响当次，不会改这里。</p>
+
+  <form class="card" id="form">
+
+    <div class="field">
+      <label for="defaultLetters">默认字母数</label>
+      <div class="row">
+        <input type="range" id="defaultLettersRange" min="1" max="26" step="1" value="6">
+        <input type="number" id="defaultLetters" min="1" max="26" step="1" value="6">
+      </div>
+      <p class="hint">1 ~ 26。字母从 Z 往前取，<b>6</b> 表示 <code id="previewLetters">U V W X Y Z</code></p>
+    </div>
+
+    <div class="field">
+      <label>默认骰子面数</label>
+      <div class="radios">
+        <label class="radio"><input type="radio" name="defaultDice" value="10"> <span>10 面（1 ~ 10）</span></label>
+        <label class="radio"><input type="radio" name="defaultDice" value="6"> <span>6 面（1 ~ 6）</span></label>
+      </div>
+      <p class="hint">弹窗里随时可以在两者之间切换。</p>
+    </div>
+
+    <div class="field">
+      <label>默认外观</label>
+      <div class="radios">
+        <label class="radio"><input type="radio" name="theme" value="dark"> <span>暗色</span></label>
+        <label class="radio"><input type="radio" name="theme" value="light"> <span>亮色</span></label>
+      </div>
+      <p class="hint">弹窗右上角的开关也会改这里，两处是同一个值。</p>
+    </div>
+
+    <div class="actions">
+      <button type="submit" class="save">保存</button>
+      <button type="button" class="reset" id="btnReset">恢复默认</button>
+      <span class="status" id="status" role="status" aria-live="polite"></span>
+    </div>
+
+  </form>
+
+  <div class="card preview-card">
+    <h2>预览</h2>
+    <div class="preview-meta">
+      <span id="pvRange">U~Z</span>
+      <span id="pvDice">10 面</span>
+    </div>
+    <div class="preview-result" id="pvResult"></div>
+    <button type="button" class="ghost" id="btnPreviewRoll">重抽一次</button>
+  </div>
+
+  <footer class="foot">
+    <p>逻辑与 Typecho 插件版一致：字母从 Z 往前取 N 个，每个字母配一个 1~面数 的随机数。仅保留数字滚动，无入场动画。</p>
+    <p class="muted">扩展本地运行，不联网、不采集任何数据。</p>
+  </footer>
+
+</div>
+<script src="rng.js"></script>
+<script src="storage.js"></script>
+<script src="options.js"></script>
+</body>
+</html>

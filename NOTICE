@@ -1,0 +1,99 @@
+# NOTICE · 版权与署名说明
+
+本文件是对 [LICENSE](LICENSE) 的补充说明，**请与 LICENSE 一并保留**。
+（`LICENSE` 说明版权状态与使用要求，本文件说明署名位置与异议处理。）
+
+## 一、原作信息
+
+| | |
+|---|---|
+| **原作名称** | RandomNumberGenerator |
+| **原作者** | **doumiaojiang** |
+| **原仓库** | <https://github.com/doumiaojiang/RandomNumberGenerator> |
+| **原作版本** | 1.1.1 |
+| **原作声明** | 原作源码文件头为 `@package RandomNumberGenerator` / `@author Grok` / `@version 1.1.1` |
+| **原作协议** | **未声明**（仓库中没有 LICENSE 文件，GitHub API 的 `license` 字段为 `null`） |
+
+本项目的**插件版**（`RandomNumberGenerator/`）基于上述原作修改而来。
+
+## 二、本项目的署名
+
+| 角色 | 署名 |
+|---|---|
+| **原作作者** | **doumiaojiang** |
+| **维护者** | **lt5d-yunzi** |
+| **代码实现与文档** | **鲸鱼少女**（AI 编码助手 · DeepSeek Harness） |
+
+实现者的署名位置：
+
+| 文件 | 署名形式 |
+|---|---|
+| [RandomNumberGenerator/Plugin.php](RandomNumberGenerator/Plugin.php) | `@implemented-by 鲸鱼少女（AI 编码助手 · DeepSeek Harness）` |
+| [browser-extension/manifest.json](browser-extension/manifest.json) | `"author": "鲸鱼少女（AI 编码助手 · DeepSeek Harness）"` |
+| [README.md](README.md) / [插件 README](RandomNumberGenerator/README.md) | 「本项目的署名」表格 |
+
+## 三、授权范围
+
+由于原作未声明开源协议，本项目的授权范围明确如下：
+
+- **原作部分的权利**
+  → **全部归原作者 doumiaojiang 所有**
+  → 原作未声明协议，本项目**不主张、也无法代为授权**
+
+- **本项目的修改与新增部分**
+  → **不做版权主张**，任何人都可以自由使用、修改、再分发
+  → 唯一要求是保留原作者署名（见下一节）
+
+- **重要提示**
+  → 原作为**公开仓库**，但**未声明开源协议**，全部权利归原作者
+  → 本仓库**不对原作部分作出任何授权**
+  → 将本插件用于**商业用途**之前，建议先联系原作者取得授权
+  → 如原作者提出要求，我们会立即下架
+
+### 为什么本仓库不主张版权
+
+本仓库**不对自身的修改与新增部分主张版权**，原因有两条：
+
+1. **原作未声明协议**，按著作权默认规则，原作全部权利归原作者 doumiaojiang。
+   在此基础上，本仓库无法、也不应代替原作者进行授权。
+2. **实现由 AI 编码助手完成**。AI 生成内容在多数法域下
+   **不构成可版权作品**，将其列为版权人会使协议本身产生歧义。
+
+因此：
+
+- [LICENSE](LICENSE) **不是开源协议**，而是对版权状态与署名要求的如实陈述
+- 版权人只有一位：**原作者 doumiaojiang**
+
+## 四、署名要求
+
+**使用、修改、再分发本插件时，必须完整保留以下署名：**
+
+1. 原作者 **doumiaojiang** 及其仓库地址
+2. [LICENSE](LICENSE) 中的全部版权声明
+3. 本 `NOTICE` 文件
+
+署名在仓库中的位置：
+
+| 文件 | 署名形式 |
+|---|---|
+| [LICENSE](LICENSE) | `Copyright (c) 2025 doumiaojiang` |
+| [RandomNumberGenerator/Plugin.php](RandomNumberGenerator/Plugin.php) | `@original-author doumiaojiang` |
+| [RandomNumberGenerator/README.md](RandomNumberGenerator/README.md) | 「署名与致谢」章节 |
+| [README.md](README.md) | 「署名与致谢」章节 |
+
+## 五、原作者异议处理
+
+若原作者 doumiaojiang 对本次修改、再分发或授权方式有任何意见，
+请在本仓库提 Issue：
+
+<https://github.com/lt5d-yunzi/random-number-generator/issues>
+
+我们会立即配合调整，包括但不限于：
+
+- 修改署名方式或补充署名位置
+- 变更授权协议
+- 下架相关内容
+
+---
+
+**再次感谢 doumiaojiang 的开源分享。**

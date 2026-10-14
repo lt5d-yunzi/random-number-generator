@@ -1,0 +1,31 @@
+# ---- 密钥与凭据：绝对不要提交 ----
+*.pem
+*.key
+*.p12
+*.pfx
+.env
+.env.*
+!.env.example
+config.inc.php
+
+# ---- 系统与编辑器 ----
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*~
+.idea/
+.vscode/
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# ---- 构建与临时产物 ----
+*.crx
+!dist/RandomNumberGenerator.crx
+*.zip
+*.log
+*.tmp

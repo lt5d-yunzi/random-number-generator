@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>随机数生成器</title>
+<link rel="stylesheet" href="popup.css">
+</head>
+<body>
+<div class="rng" id="rng">
+
+  <header class="rng-header">
+    <h1 class="rng-title">随机数生成器</h1>
+    <div class="rng-header-right">
+      <button type="button" class="rng-icon-btn" id="btnOptions" title="默认设置">&#9881;</button>
+      <label class="rng-switch" title="日夜模式">
+        <input type="checkbox" id="themeToggle">
+        <span class="rng-slider"></span>
+      </label>
+    </div>
+  </header>
+
+  <div class="rng-meta">
+    <span id="metaRange" class="rng-meta-range">U~Z</span>
+    <span id="metaDice" class="rng-meta-dice">10 面</span>
+  </div>
+
+  <div class="rng-actions">
+    <button type="button" class="rng-btn rng-btn-red" data-action="add">增加数字</button>
+    <button type="button" class="rng-btn rng-btn-red" data-action="remove">减少数字</button>
+    <button type="button" class="rng-btn rng-btn-blue" data-action="dice" id="btnDice">切换到 6 面骰子</button>
+    <button type="button" class="rng-btn rng-btn-red" data-action="roll">重新随机</button>
+  </div>
+
+  <div class="rng-result" id="result"></div>
+
+  <footer class="rng-footer">
+    <span id="hint">字母从 Z 往前取，每个字母配一个随机数</span>
+  </footer>
+
+</div>
+<script src="rng.js"></script>
+<script src="storage.js"></script>
+<script src="popup.js"></script>
+</body>
+</html>
