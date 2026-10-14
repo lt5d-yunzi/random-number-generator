@@ -351,8 +351,13 @@
     bottom: 18px;
     z-index: 1050;
     font-family: inherit;
+    /* 拖动时不要触发页面滚动 / 文字选择 */
+    touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
 }
 .rng-float-btn {
+    cursor: grab;
     width: 48px;
     height: 48px;
     border-radius: 50%;
@@ -370,11 +375,13 @@
     transform: translateY(-2px);
 }
 .rng-float-panel {
-    position: absolute;
-    right: 0;
-    bottom: 60px;
+    /* 位置由 JS 按球的位置计算并夹在视口内，所以用 fixed 而不是相对球定位 */
+    position: fixed;
+    left: 0;
+    top: 0;
     width: 340px;
     max-width: calc(100vw - 36px);
+    z-index: 1051;
     filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.28));
 }
 .rng-float-panel[hidden] {
@@ -445,4 +452,69 @@
     .rng-float-panel {
         width: calc(100vw - 24px);
     }
+}
+
+
+/* ---------------- 悬浮窗：标题栏按钮 / 隐藏 / 召回 / 拖动 ---------------- */
+
+.rng-float-tools {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.rng-float-min {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 3px;
+    opacity: 0.8;
+}
+.rng-float-min:hover {
+    opacity: 1;
+}
+
+/* 隐藏后留下的召回小圆点：低调但一直都在 */
+.rng-float-recall {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    cursor: grab;
+    background-color: rgba(52, 152, 219, 0.30);
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 13px;
+    line-height: 1;
+    opacity: 0.55;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+    transition: opacity 0.2s ease, background-color 0.2s ease;
+}
+.rng-float-recall:hover {
+    opacity: 1;
+    background-color: rgba(52, 152, 219, 0.92);
+}
+.rng-float-recall[hidden] {
+    display: none;
+}
+
+/* 隐藏状态：球和面板都不显示，只留召回点 */
+.rng-float.rng-hidden .rng-float-btn,
+.rng-float.rng-hidden .rng-float-panel {
+    display: none !important;
+}
+
+/* 拖动中 */
+.rng-float.rng-dragging {
+    transition: none;
+}
+.rng-float.rng-dragging .rng-float-btn,
+.rng-float.rng-dragging .rng-float-recall {
+    cursor: grabbing;
 }

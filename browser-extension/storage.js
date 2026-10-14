@@ -12,6 +12,7 @@
         defaultLetters: 6,      // 选项页设置：默认字母数
         defaultDice: 10,        // 选项页设置：默认面数
         theme: 'dark',          // 选项页设置：dark | light
+        injectPage: true,       // 是否把挂件注入到网页上
         lastLetters: null,      // 弹窗上次用的字母数（null = 跟随默认）
         lastDice: null          // 弹窗上次用的面数
     };
@@ -62,11 +63,19 @@
         });
     }
 
+    /** 网页挂件的显示开关（与其它设置分开，便于弹窗里单独切换） */
+    function setInject(on) {
+        var o = {};
+        o.injectPage = !!on;
+        return set(o);
+    }
+
     root.RNGStore = {
         DEFAULTS: DEFAULTS,
         hasChrome: !!hasChrome,
         get: get,
         set: set,
-        reset: reset
+        reset: reset,
+        setInject: setInject
     };
 })(typeof self !== 'undefined' ? self : this);

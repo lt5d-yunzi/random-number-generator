@@ -85,6 +85,9 @@
         var themeRadio = el.form.querySelector('input[name="theme"][value="' + s.theme + '"]');
         if (themeRadio) { themeRadio.checked = true; }
 
+        var injRadio = el.form.querySelector('input[name="injectPage"][value="' + (s.injectPage ? '1' : '0') + '"]');
+        if (injRadio) { injRadio.checked = true; }
+
         current.letters = s.defaultLetters;
         current.dice = s.defaultDice;
         renderPreview();
@@ -93,10 +96,12 @@
     function readForm() {
         var dice = el.form.querySelector('input[name="defaultDice"]:checked');
         var theme = el.form.querySelector('input[name="theme"]:checked');
+        var inj = el.form.querySelector('input[name="injectPage"]:checked');
         return {
             defaultLetters: RNG.clampLetters(el.letters.value),
             defaultDice: RNG.normalizeDice(dice ? dice.value : RNG.DEFAULT_DICE),
-            theme: theme ? theme.value : 'dark'
+            theme: theme ? theme.value : 'dark',
+            injectPage: inj ? inj.value === '1' : true
         };
     }
 
@@ -131,7 +136,7 @@
             return RNGStore.get();
         }).then(function (s) {
             // 清掉弹窗的运行状态，让它下次跟随新的默认值
-            return RNGStore.set({ lastLetters: null, lastDice: null }).then(function () {
+            return RNGStore.set({ lastLetters: null, lastDice: null, injectPage: true }).then(function () {
                 fillForm(s);
                 setStatus('已恢复默认');
             });

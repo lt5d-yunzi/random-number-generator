@@ -1,0 +1,224 @@
+/*!
+ * content.css —— 注入到网页里的悬浮挂件样式
+ *
+ * 这个文件被塞进 Shadow DOM 里（<link> 引入），所以：
+ *   · 完全不受宿主页面 CSS 影响
+ *   · 也不会污染宿主页面
+ * :host 就是挂件的根元素。
+ */
+
+:host {
+    all: initial;
+}
+
+* {
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+}
+
+/* ---------------- 容器 ---------------- */
+.rng-float {
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    z-index: 2147483000;
+    touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+/* ---------------- 悬浮球 ---------------- */
+.rng-float-btn {
+    cursor: grab;
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background-color: #3498db;
+    color: #ffffff;
+    font-size: 22px;
+    line-height: 1;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .28);
+    transition: transform .15s ease, background-color .15s ease;
+}
+.rng-float-btn:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+}
+
+/* ---------------- 面板 ---------------- */
+.rng-float-panel {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 330px;
+    max-width: calc(100vw - 36px);
+    background: #1a1a1a;
+    color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .35);
+    overflow: hidden;
+}
+.rng-float-panel[hidden] {
+    display: none;
+}
+
+.rng-float-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #111;
+    padding: 8px 12px;
+}
+.rng-float-title {
+    font-size: 13px;
+    font-weight: 600;
+}
+.rng-float-tools {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+.rng-float-min,
+.rng-float-close {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 4px;
+    opacity: .8;
+}
+.rng-float-close { font-size: 20px; }
+.rng-float-min:hover,
+.rng-float-close:hover { opacity: 1; }
+
+.rng-body {
+    padding: 12px;
+}
+
+/* ---------------- 参数行 ---------------- */
+.rng-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #8b949e;
+    margin-bottom: 8px;
+    font-family: Menlo, Consolas, monospace;
+}
+
+/* ---------------- 按钮 ---------------- */
+.rng-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+.rng-btn {
+    border: none;
+    border-radius: 6px;
+    padding: 9px 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    color: #fff;
+    line-height: 1.3;
+    transition: background-color .15s ease;
+}
+.rng-btn-red  { background-color: #e74c3c; }
+.rng-btn-red:hover:not(:disabled)  { background-color: #c0392b; }
+.rng-btn-blue { background-color: #3498db; }
+.rng-btn-blue:hover:not(:disabled) { background-color: #2980b9; }
+.rng-btn:disabled {
+    background-color: #7f8c8d;
+    color: #d3d3d3;
+    cursor: not-allowed;
+}
+
+/* ---------------- 结果 ---------------- */
+.rng-result {
+    background-color: #2c2c2c;
+    border-radius: 8px;
+    padding: 10px;
+    margin-top: 10px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+    gap: 8px;
+    min-height: 60px;
+}
+.rng-slot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.rng-letter {
+    color: #e74c3c;
+    font-weight: 700;
+    font-size: 13px;
+    margin-bottom: 3px;
+    line-height: 1.2;
+    font-family: Menlo, Consolas, monospace;
+}
+.rng-number {
+    background-color: #34495e;
+    color: #fff;
+    border-radius: 5px;
+    width: 100%;
+    text-align: center;
+    padding: 5px 0;
+    font-size: 14px;
+    line-height: 1.2;
+    font-family: Menlo, Consolas, monospace;
+}
+
+/* ---------------- 亮色 ---------------- */
+.rng-float.rng-light .rng-float-panel {
+    background: #ffffff;
+    color: #333333;
+}
+.rng-float.rng-light .rng-float-bar {
+    background: #f0f2f5;
+    color: #333;
+}
+.rng-float.rng-light .rng-float-min,
+.rng-float.rng-light .rng-float-close {
+    color: #333;
+}
+.rng-float.rng-light .rng-meta { color: #7a838c; }
+.rng-float.rng-light .rng-result { background-color: #f0f0f0; }
+.rng-float.rng-light .rng-number { background-color: #b0c4de; color: #333; }
+
+/* ---------------- 隐藏 / 召回 ---------------- */
+.rng-float-recall {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    cursor: grab;
+    background-color: rgba(52, 152, 219, .30);
+    color: rgba(255, 255, 255, .9);
+    font-size: 13px;
+    line-height: 1;
+    opacity: .55;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .18);
+    transition: opacity .2s ease, background-color .2s ease;
+}
+.rng-float-recall:hover {
+    opacity: 1;
+    background-color: rgba(52, 152, 219, .92);
+}
+.rng-float-recall[hidden] { display: none; }
+
+.rng-float.rng-hidden .rng-float-btn,
+.rng-float.rng-hidden .rng-float-panel { display: none !important; }
+
+/* ---------------- 拖动中 ---------------- */
+.rng-float.rng-dragging .rng-float-btn,
+.rng-float.rng-dragging .rng-float-recall { cursor: grabbing; }

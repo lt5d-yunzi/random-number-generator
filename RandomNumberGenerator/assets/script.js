@@ -204,45 +204,256 @@
         });
     }
 
-    /* ---------------- 悬浮窗 ---------------- */
+    /* ---------------- 悬浮窗：拖动 + 隐藏/召回 + 面板定位 ---------------- */
+
+    var POS_KEY = 'rngFloatPos';
+    var HIDDEN_KEY = 'rngFloatHidden';
+    var DRAG_THRESHOLD = 5;   // 移动不超过这个距离算「点击」，不算拖动
+
+    function lsGet(key) {
+        try {
+            var raw = window.localStorage.getItem(key);
+            return raw === null ? null : JSON.parse(raw);
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function lsSet(key, value) {
+        try {
+            window.localStorage.setItem(key, JSON.stringify(value));
+        } catch (e) {}
+    }
+
+    function clampNum(v, min, max) {
+        return Math.max(min, Math.min(max, v));
+    }
 
     function initFloating() {
-        var floats = document.querySelectorAll('.rng-float');
-        Array.prototype.forEach.call(floats, function (box) {
+        var boxes = document.querySelectorAll('.rng-float[data-rng-float]');
+        Array.prototype.forEach.call(boxes, function (box, index) {
             if (box.getAttribute('data-rng-float-ready') === '1') {
                 return;
             }
             box.setAttribute('data-rng-float-ready', '1');
 
             var panel = box.querySelector('[data-rng-float-panel]');
-            var toggles = box.querySelectorAll('[data-rng-float-toggle]');
+            var hideBtn = box.querySelector('[data-rng-float-hide]');
+            var recall = box.querySelector('[data-rng-float-recall]');
             var btn = box.querySelector('.rng-float-btn');
+            var allToggles = box.querySelectorAll('[data-rng-float-toggle]');
+
+            // 同一页可能有多个悬浮件，位置与隐藏状态按序号分开存
+            var keyPos = POS_KEY + (index ? '-' + index : '');
+            var keyHidden = HIDDEN_KEY + (index ? '-' + index : '');
+
+            /* ---------- 位置 ---------- */
+
+            function size() {
+                return {
+                    w: box.offsetWidth || 48,
+                    h: box.offsetHeight || 48
+                };
+            }
+
+            /** 把悬浮件放到 (x,y)，自动夹在视口内；save=true 时记住 */
+            function applyPos(x, y, save) {
+                var s = size();
+                var m = 6;
+                var nx = clampNum(x, m, Math.max(m, window.innerWidth - s.w - m));
+                var ny = clampNum(y, m, Math.max(m, window.innerHeight - s.h - m));
+                box.style.left = Math.round(nx) + 'px';
+                box.style.top = Math.round(ny) + 'px';
+                box.style.right = 'auto';
+                box.style.bottom = 'auto';
+                if (save) {
+                    lsSet(keyPos, { x: Math.round(nx), y: Math.round(ny) });
+                }
+                return { x: nx, y: ny };
+            }
+
+            function currentPos() {
+                var r = box.getBoundingClientRect();
+                return { x: r.left, y: r.top };
+            }
+
+            // 恢复上次位置
+            var saved = lsGet(keyPos);
+            if (saved && typeof saved.x === 'number' && typeof saved.y === 'number') {
+                applyPos(saved.x, saved.y, false);
+            }
+
+            /* ---------- 面板开合与定位 ---------- */
+
+            /** 面板贴着球，并自动避开视口边缘 */
+            function placePanel() {
+                if (!panel || !btn || panel.hasAttribute('hidden')) {
+                    return;
+                }
+                var r = btn.getBoundingClientRect();
+                var pw = panel.offsetWidth;
+                var ph = panel.offsetHeight;
+                var m = 8;
+
+                var left = r.left + r.width / 2 - pw / 2;
+                left = clampNum(left, m, Math.max(m, window.innerWidth - pw - m));
+
+                var top = r.top - ph - 10;                      // 优先放上方
+                if (top < m) {
+                    top = r.bottom + 10;                        // 上方放不下就放下面
+                }
+                top = clampNum(top, m, Math.max(m, window.innerHeight - ph - m));
+
+                panel.style.left = Math.round(left) + 'px';
+                panel.style.top = Math.round(top) + 'px';
+            }
 
             function setOpen(open) {
-                if (!panel) {
+                if (!panel || box.classList.contains('rng-hidden')) {
                     return;
                 }
                 if (open) {
                     panel.removeAttribute('hidden');
                     box.classList.add('rng-float-open');
+                    placePanel();
                 } else {
                     panel.setAttribute('hidden', 'hidden');
                     box.classList.remove('rng-float-open');
                 }
-                Array.prototype.forEach.call(toggles, function (t) {
+                Array.prototype.forEach.call(allToggles, function (t) {
                     t.setAttribute('aria-expanded', open ? 'true' : 'false');
                 });
-                if (open && btn) {
-                    btn.blur();
+            }
+
+            /* ---------- 隐藏 / 召回 ---------- */
+
+            function setHidden(hidden, save) {
+                if (hidden) {
+                    setOpen(false);
+                }
+                box.classList.toggle('rng-hidden', hidden);
+                if (recall) {
+                    if (hidden) {
+                        recall.removeAttribute('hidden');
+                    } else {
+                        recall.setAttribute('hidden', 'hidden');
+                    }
+                }
+                if (!hidden) {
+                    // 召回后重新夹一次，避免视口变小后跑到屏幕外
+                    var p = currentPos();
+                    applyPos(p.x, p.y, false);
+                }
+                if (save) {
+                    lsSet(keyHidden, hidden ? 1 : 0);
                 }
             }
 
-            Array.prototype.forEach.call(toggles, function (t) {
+            if (lsGet(keyHidden) === 1) {
+                setHidden(true, false);
+            }
+
+            /* ---------- 拖动（Pointer Events，鼠标/触摸统一）---------- */
+
+            var drag = null;
+
+            function onDown(ev) {
+                if (ev.pointerType === 'mouse' && ev.button !== 0) {
+                    return;
+                }
+                var p = currentPos();
+                drag = {
+                    id: ev.pointerId,
+                    startX: ev.clientX,
+                    startY: ev.clientY,
+                    baseX: p.x,
+                    baseY: p.y,
+                    moved: false
+                };
+                box.classList.add('rng-dragging');
+                try {
+                    ev.currentTarget.setPointerCapture(ev.pointerId);
+                } catch (e) {}
+            }
+
+            function onMove(ev) {
+                if (!drag || ev.pointerId !== drag.id) {
+                    return;
+                }
+                var dx = ev.clientX - drag.startX;
+                var dy = ev.clientY - drag.startY;
+                if (!drag.moved && Math.abs(dx) + Math.abs(dy) < DRAG_THRESHOLD) {
+                    return;
+                }
+                drag.moved = true;
+                applyPos(drag.baseX + dx, drag.baseY + dy, false);
+                if (box.classList.contains('rng-float-open')) {
+                    placePanel();
+                }
+                ev.preventDefault();
+            }
+
+            /** 返回本次是否真的拖动过 */
+            function onUp(ev) {
+                if (!drag || ev.pointerId !== drag.id) {
+                    return false;
+                }
+                var moved = drag.moved;
+                drag = null;
+                box.classList.remove('rng-dragging');
+                try {
+                    ev.currentTarget.releasePointerCapture(ev.pointerId);
+                } catch (e) {}
+                var p = currentPos();
+                applyPos(p.x, p.y, true);            // 夹回视口并记住
+                return moved;
+            }
+
+            // 球和召回点都是拖动句柄；没拖动时算点击
+            [btn, recall].forEach(function (handle) {
+                if (!handle) {
+                    return;
+                }
+                handle.addEventListener('pointerdown', onDown);
+                handle.addEventListener('pointermove', onMove);
+                handle.addEventListener('pointerup', function (ev) {
+                    var moved = onUp(ev);
+                    if (moved) {
+                        return;                       // 拖过就不触发开合
+                    }
+                    if (handle === recall) {
+                        setHidden(false, true);       // 点召回点 → 显示
+                    } else {
+                        setOpen(panel.hasAttribute('hidden'));
+                    }
+                });
+                handle.addEventListener('pointercancel', function (ev) {
+                    onUp(ev);
+                });
+            });
+
+            // 面板里的关闭按钮（非拖动句柄）走普通 click
+            Array.prototype.forEach.call(allToggles, function (t) {
+                if (t === btn || t === recall) {
+                    return;
+                }
                 t.addEventListener('click', function (ev) {
                     ev.preventDefault();
+                    ev.stopPropagation();
                     setOpen(panel.hasAttribute('hidden'));
                 });
             });
+
+            // 隐藏按钮
+            if (hideBtn) {
+                hideBtn.addEventListener('click', function (ev) {
+                    ev.preventDefault();
+                    ev.stopPropagation();
+                    setHidden(true, true);
+                });
+            }
+
+            /* ---------- 其它 ---------- */
 
             // 点面板外部收起
             document.addEventListener('click', function (ev) {
@@ -258,6 +469,15 @@
             document.addEventListener('keydown', function (ev) {
                 if (ev.key === 'Escape' && box.classList.contains('rng-float-open')) {
                     setOpen(false);
+                }
+            });
+
+            // 视口变化后把位置与面板夹回可视区
+            window.addEventListener('resize', function () {
+                var p = currentPos();
+                applyPos(p.x, p.y, true);
+                if (box.classList.contains('rng-float-open')) {
+                    placePanel();
                 }
             });
         });

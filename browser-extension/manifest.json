@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "随机数生成器",
-  "version": "1.3.1",
-  "description": "按字母生成随机数：字母从 Z 往前取 N 个（默认 6 → U V W X Y Z），每个字母配一个 1~面数 的随机数，10 面 / 6 面随时切换。",
+  "version": "1.4.0",
+  "description": "按字母生成随机数：字母从 Z 往前取 N 个（默认 6 → U V W X Y Z），每个字母配一个 1~面数的随机数，10 面 / 6 面随时切换。可注入到网页上作为可拖动的悬浮挂件。",
   "author": "鲸鱼少女（AI 编码助手 · DeepSeek Harness）",
   "icons": {
     "16": "icons/icon16.png",
@@ -27,5 +27,29 @@
   "permissions": [
     "storage"
   ],
-  "offline_enabled": true
+  "offline_enabled": true,
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "rng.js",
+        "storage.js",
+        "content.js"
+      ],
+      "run_at": "document_idle",
+      "all_frames": false
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "content.css"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ]
 }

@@ -31,7 +31,8 @@
         metaDice: document.getElementById('metaDice'),
         btnDice: document.getElementById('btnDice'),
         themeToggle: document.getElementById('themeToggle'),
-        btnOptions: document.getElementById('btnOptions')
+        btnOptions: document.getElementById('btnOptions'),
+        injectToggle: document.getElementById('injectToggle')
     };
 
     /* ---------------- 渲染 ---------------- */
@@ -116,6 +117,10 @@
         saveSettings({ theme: settings.theme });
     });
 
+    el.injectToggle.addEventListener('change', function () {
+        RNGStore.setInject(el.injectToggle.checked);
+    });
+
     el.btnOptions.addEventListener('click', function () {
         if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.openOptionsPage) {
             chrome.runtime.openOptionsPage();
@@ -136,6 +141,7 @@
 
         applyTheme();
         render();
+        el.injectToggle.checked = !!s.injectPage;
 
         // 首次使用：把默认值写入存储，之后选项页改动能生效
         if (s.lastLetters == null) {

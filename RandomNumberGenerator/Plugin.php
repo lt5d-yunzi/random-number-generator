@@ -32,7 +32,7 @@
  * @original-author doumiaojiang <https://github.com/doumiaojiang>
  * @author lt5d-yunzi <https://github.com/lt5d-yunzi>
  * @implemented-by 鲸鱼少女（AI 编码助手 · DeepSeek Harness）
- * @version 1.3.2
+ * @version 1.3.3
  * @license 未声明（原作未授权；本项目不主张版权，详见 LICENSE 与 NOTICE）
  * @link https://github.com/lt5d-yunzi/random-number-generator
  */
@@ -45,7 +45,7 @@ class RandomNumberGenerator_Plugin implements Typecho_Plugin_Interface
     /** 资源是否已输出过（避免同一页重复引入） */
     private static $assetsDone = false;
 
-    const VERSION = '1.3.2';
+    const VERSION = '1.3.3';
     const MIN_LETTERS = 1;
     const MAX_LETTERS = 26;
 
@@ -214,16 +214,24 @@ class RandomNumberGenerator_Plugin implements Typecho_Plugin_Interface
         list($letters, $dice) = self::resolve(null, null);
         $uid = 'rng-float-' . (++self::$seq);
         ?>
-<div class="rng-float" id="<?php echo $uid; ?>">
+<div class="rng-float" id="<?php echo $uid; ?>" data-rng-float="1">
     <button type="button" class="rng-float-btn" data-rng-float-toggle="1"
-            aria-expanded="false" aria-controls="<?php echo $uid; ?>-panel" title="随机数生成器">&#127922;</button>
+            aria-expanded="false" aria-controls="<?php echo $uid; ?>-panel"
+            title="随机数生成器（按住可拖动）">&#127922;</button>
     <div class="rng-float-panel" id="<?php echo $uid; ?>-panel" data-rng-float-panel="1" hidden>
         <div class="rng-float-bar">
             <span class="rng-float-title">随机数生成器</span>
-            <button type="button" class="rng-float-close" data-rng-float-toggle="1" aria-label="关闭">&times;</button>
+            <span class="rng-float-tools">
+                <button type="button" class="rng-float-min" data-rng-float-hide="1"
+                        title="隐藏（原位置会留一个小圆点，点它可召回）">&#8211;</button>
+                <button type="button" class="rng-float-close" data-rng-float-toggle="1"
+                        aria-label="关闭">&times;</button>
+            </span>
         </div>
         <?php echo self::widgetHtml($letters, $dice, 'full'); ?>
     </div>
+    <button type="button" class="rng-float-recall" data-rng-float-recall="1" hidden
+            title="显示随机数生成器">&#127922;</button>
 </div>
         <?php
     }
